@@ -1,0 +1,44 @@
+const express=require('express');
+const app=express();
+const cors=require('cors');
+const mysql=require('mysql2');
+require('dotenv').config();
+
+app.use(cors());
+app.use(express.json());
+
+const db=mysql.createConnection({
+    host: process.env.MYHOST,
+    user: process.env.MYUSER,
+    password: process.env.MYPASS,
+    database: process.env.MYDBNAME
+});
+db.connect(err=>{
+    if(err){
+        console.error('error in database connection',err);
+    }else{
+        console.log('database connected');
+    }
+});
+app.post('/appointments',(req,res)=>{
+    const {name,email,phone,date,time,message}=req.body;
+    const sql="INSERT INTO usersss(name,email,phone,date,time,message) VALUES(?,?,?,?,?,?)";
+    db.query(sql,[name,email,phone,date,time,message],(err,result)=>{
+        if(err){
+            console.error(err);
+            return res.status(500).json({error: 'database error'});
+        }
+        res.status(201).json({message:`Appointment Confirmed for ${name} on ${date} at ${time}`});
+    });
+});
+app.get('/appointments',(req,res)=>{
+    db.query('SELECT * FROM usersss',(err,results)=>{
+        if(err){
+            return res.status(500).json({error:'database error'});
+        }
+        res.json(results);
+    });
+});
+app.listen(5000,()=>{
+    console.log('Server Started');
+})
