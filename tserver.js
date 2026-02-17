@@ -12,10 +12,10 @@ app.use(cors({
 app.use(express.json());
 
 const db=mysql.createConnection({
-    host: process.env.MYHOST,
-    user: process.env.MYUSER,
-    password: process.env.MYPASS,
-    database: process.env.MYDBNAME
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQL_DATABASE
 });
 db.connect(err=>{
     if(err){
